@@ -40,6 +40,10 @@ def create(source, name, owner, workspace, visibility):
     workflows = target / ".github" / "workflows"
     if workflows.is_dir():
         shutil.move(str(workflows), str(overlay / "upstream-workflows-disabled"))
+    issue_dir = target / ".github" / "ISSUE_TEMPLATE"
+    issue_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(HERE / "issue-template" / "torsionfield-community.yml",
+                 issue_dir / "torsionfield-community.yml")
     detected = [kind for kind, names in {
         "node": ("package.json",), "python": ("pyproject.toml", "requirements.txt"),
         "rust": ("Cargo.toml",), "go": ("go.mod",),
@@ -68,6 +72,7 @@ def create(source, name, owner, workspace, visibility):
         "ABP/browser compute. Browser work is allowlisted; other agent tasks "
         "are proposals pending review and a separately approved adapter.\n\n"
         "MCP stdio entry: node .torsionfield/mcp.mjs\n\n"
+        "Public proposals: GitHub Issues > New issue > Torsionfield Community Investigation.\n"
         "See .torsionfield/COMMUNITY.md for API and deployment limits.\n")
     with (target / ".gitignore").open("a") as f:
         f.write("\n# Community-local state\n.torsionfield/state/\n.torsionfield/*.token\n")
